@@ -1,4 +1,5 @@
 use std::io;
+use rand::Rng; // 0.8.0
 
 struct Letter {
     letter: char,
@@ -6,7 +7,6 @@ struct Letter {
 }
 
 fn main() {
-    // let words = ["cheese", "food", "test"];
     let hangman_pics = [
         "
         +---+
@@ -66,20 +66,73 @@ fn main() {
     =========",
     ];
     let mut lives = 0;
-    let answer = [Letter { letter: 'f', revealed: false},
-        Letter { letter: 'o', revealed: true},
-        Letter { letter: 'o', revealed: false},
-        Letter { letter: 'd', revealed: false}];
-    let guess = read_user_input_character();
-    let user_answer = get_user_answer(&answer);
-    println!("{}", user_answer);
-    println!("{}", lives);
+    let mut answer = get_game_answer();
 
     println!("This is hangman game!");
+    let mut flag = false;
+    while !flag & (lives<hangman_pics.len()-1){
+        // print start & blanks
+        println!("{}", hangman_pics[lives]);
+        println!("{}", get_user_answer(&answer));
+        let guess = read_user_input_character();
+        flag = true;
+        let mut change = false;
+        for i in 0..answer.len(){
+            if answer[i].letter == guess{
+                answer[i].revealed = true;
+                change = true;
+            }
+            flag = flag & answer[i].revealed;
+        }
+        // if its not inrement lives
+        if !change {
+            lives = lives + 1;
+        }
+    }
+
+    if lives == hangman_pics.len()-1{
+        println!("You lose!");
+        println!("The word you couldn't get was {}", get_result(&answer) );
+        println!("{}", hangman_pics[hangman_pics.len()-1]);
+    } else {
+        println!("You win!");
+        println!("
+            +---+
+            |   |
+                |
+       \\O/      |
+        |       |
+       / \\      |
+    =============")
+    }
+
+}
+
+fn get_game_answer() -> Vec<Letter> {
+    let words = ["goats", "moats", "toads", "bacon", "jazz", "turds", "abruptly", "matrix","xylophone", "flyby", "food"];
+    let word = words[rand::thread_rng().gen_range(0..words.len()-1)];
+    let mut result: Vec<Letter> = Vec::new();
+
+    for c in word.chars() {
+        let temp = Letter{
+            letter: c,
+            revealed: false
+        };
+        result.push(temp)
+    }
+    return result;
+}
+
+fn get_result(answer: &Vec<Letter>) -> String {
+    let mut result = String::new();
+    for letter in answer{
+        result.push(letter.letter);
+    }
+    return result;
 }
 
 
-fn get_user_answer(answer: &[Letter]) -> String {
+fn get_user_answer(answer: &Vec<Letter>) -> String {
     let mut result = String::new();
     for letter in answer{
         if letter.revealed {
