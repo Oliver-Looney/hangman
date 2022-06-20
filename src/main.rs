@@ -132,7 +132,6 @@ fn get_result(answer: &Vec<Letter>) -> String {
     return result;
 }
 
-
 fn get_user_answer(answer: &Vec<Letter>) -> String {
     let mut result = String::new();
     for letter in answer{
@@ -145,6 +144,45 @@ fn get_user_answer(answer: &Vec<Letter>) -> String {
     }
     return result;
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn test_get_user_answer(){
+        let mut input_test:Vec<Letter> = vec![
+            Letter{
+                letter: 'h',
+                revealed: true
+            },
+            Letter{
+                letter: 'i',
+                revealed: true
+            }
+        ];
+        assert_eq!(get_user_answer(&input_test),"hi");
+        input_test[1].revealed = false;
+        assert_eq!(get_user_answer(&input_test),"h_");
+    }
+
+    #[test]
+    fn test_get_result(){
+        let mut input_test:Vec<Letter> = vec![
+            Letter{
+                letter: 'h',
+                revealed: true
+            },
+            Letter{
+                letter: 'i',
+                revealed: true
+            }
+        ];
+        assert_eq!(get_result(&input_test),"hi");
+        input_test[1].revealed = false;
+        assert_eq!(get_result(&input_test),"hi");
+    }
+}
+
 
 fn read_user_input_character() -> char {
     let mut user_input = String::new();
