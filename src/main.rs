@@ -91,11 +91,10 @@ fn main() {
     }
 
     if lives == hangman_pics.len()-1{
+        println!("{}", hangman_pics[hangman_pics.len()-1]);
         println!("You lose!");
         println!("The word you couldn't get was {}", get_result(&answer) );
-        println!("{}", hangman_pics[hangman_pics.len()-1]);
     } else {
-        println!("You win!");
         println!("
             +---+
             |   |
@@ -103,7 +102,9 @@ fn main() {
        \\O/      |
         |       |
        / \\      |
-    =============")
+    =============");
+        println!("{}", get_result(&answer));
+        println!("You win!");
     }
 
 }
