@@ -1,6 +1,9 @@
 use std::io;
 use rand::Rng; // 0.8.0
 
+use std::fs::File;
+use std::io::prelude::*;
+
 struct Letter {
     letter: char,
     revealed: bool
@@ -84,7 +87,7 @@ fn main() {
             }
             flag = flag & answer[i].revealed;
         }
-        // if its not inrement lives
+        // if its not increment lives
         if !change {
             lives = lives + 1;
         }
@@ -106,12 +109,19 @@ fn main() {
         println!("{}", get_result(&answer));
         println!("You win!");
     }
+}
 
+pub fn getWord(index: i32) -> String {
+    let mut f = File::open("src/words.txt").expect("file not found");
+    let mut contents = String::new();
+    f.read_to_string(&mut contents)
+        .expect("something went wrong reading the file");
+    let vec = contents.split("\n").collect::<Vec<&str>>();
+    return String::from(vec[index as usize]);
 }
 
 fn get_game_answer() -> Vec<Letter> {
-    let words = ["goats", "moats", "toads", "bacon", "jazz", "turds", "abruptly", "matrix","xylophone", "flyby", "food"];
-    let word = words[rand::thread_rng().gen_range(0..words.len()-1)];
+    let word = getWord(rand::thread_rng().gen_range(1..855));
     let mut result: Vec<Letter> = Vec::new();
 
     for c in word.chars() {
